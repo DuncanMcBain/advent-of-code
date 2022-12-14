@@ -1,4 +1,5 @@
 import std.algorithm.searching;
+import std.algorithm;
 import std.array;
 import std.conv;
 import std.stdio;
@@ -21,6 +22,17 @@ class Dir {
     name_ = name;
     parent_ = parent;
   }
+}
+
+void add_dir_sizes(Dir root, ref int[Dir] dir_sizes) {
+  foreach(dir; root.sub_dirs_) {
+    add_dir_sizes(dir, dir_sizes);
+  }
+  int size = root.files_.map!(a => a.size_)().sum();
+  foreach(dir; root.sub_dirs_) {
+    size += dir_sizes[dir];
+  }
+  dir_sizes[root] = size;
 }
 
 int main() {
@@ -54,5 +66,13 @@ int main() {
       cur_dir.files_ ~= new FsFile(l[0].to!int(), l[1].to!string());
     }
   }
+  int[Dir] dir_sizes;
+  add_dir_sizes(root, dir_sizes);
+  int sum = 0;
+  foreach(dir; dir_sizes.byKeyValue()) {
+    if(dir.value <= 100000)
+      sum += dir.value;
+  }
+  writeln(sum);
   return 0;
 }
