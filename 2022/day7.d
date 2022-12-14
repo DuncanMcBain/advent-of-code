@@ -74,5 +74,13 @@ int main() {
       sum += dir.value;
   }
   writeln(sum);
+  int space_free = 70000000 - dir_sizes[root];
+  int space_needed = 30000000 - space_free;
+  Dir smallest = root;
+  foreach(dir; dir_sizes.byKeyValue()) {
+    if(dir.value < dir_sizes[smallest] && dir.value > space_needed)
+      smallest = dir.key;
+  }
+  writeln("Smallest sufficient dir: ", smallest.name_, " ", dir_sizes[smallest]);
   return 0;
 }
