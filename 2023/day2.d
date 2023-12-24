@@ -1,3 +1,4 @@
+import std.algorithm;
 import std.array;
 import std.format.read;
 import std.stdio;
@@ -66,6 +67,27 @@ int main() {
     if(clean)
       score += game.game_id;
   }
-  writeln(score);
+  writeln("Sum of possible games: ", score);
+
+  int power_sum = 0;
+  foreach(game; games) {
+    auto r = min_cubes(game);
+    power_sum += power(r);
+  }
+  writeln("Sum of set powers: ", power_sum);
   return 0;
+}
+
+Record min_cubes(Game g) {
+  auto r = Record(0, 0, 0);
+  foreach(record; g.records) {
+    r.red = max(r.red, record.red);
+    r.green = max(r.green, record.green);
+    r.blue = max(r.blue, record.blue);
+  }
+  return r;
+}
+
+int power(Record r) {
+  return r.red * r.green * r.blue;
 }
